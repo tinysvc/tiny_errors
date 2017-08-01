@@ -9,4 +9,8 @@ defmodule TinyErrors do
 
     Supervisor.start_link(children, strategy: :one_for_one)
   end
+
+  def list do
+    TinyErrors.Reporter.list
+  end
 end
