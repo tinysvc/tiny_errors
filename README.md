@@ -7,9 +7,6 @@ and you simply want to know what your most recent errors are... this package mig
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `tiny_errors` to your list of dependencies in `mix.exs`:
-
 ```elixir
 def deps do
   [{:tiny_errors, "~> 0.1.0"}]
