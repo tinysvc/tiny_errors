@@ -1,12 +1,21 @@
 defmodule TinyErrors.Mixfile do
   use Mix.Project
+  @version "0.1.0"
 
   def project do
     [app: :tiny_errors,
-     version: "0.1.0",
+     version: @version,
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     description: description(),
+     package: package(),
+     docs: [
+       extras: ["README.md"],
+       main: "readme",
+       source_ref: "v#{@version}",
+       source_url: "https://github.com/tinysvc/tiny_errors",
+     ],
      deps: deps()]
   end
 
@@ -21,15 +30,22 @@ defmodule TinyErrors.Mixfile do
     ]
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:my_dep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:my_dep, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-  #
-  # Type "mix help deps" for more examples and options
+  defp description do
+    """
+    A tiny library for looking at recent errors in an Elixir application
+    """
+  end
+
+  defp package do
+    [# These are the default files included in the package
+     name: :tiny_errors,
+     files: ["lib", "mix.exs", "README*", "LICENSE*"],
+     maintainers: ["Brandon Joyce"],
+     licenses: ["MIT"],
+     links: %{"GitHub" => "https://github.com/tinysvc/tiny_errors",
+      "Docs" => "https://github.com/tinysvc/tiny_errors"}]
+  end
+
   defp deps do
     []
   end
