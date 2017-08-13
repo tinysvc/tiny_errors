@@ -47,6 +47,9 @@ defmodule TinyErrors.Mixfile do
   end
 
   defp deps do
-    []
+    [
+      {:plug, "~> 1.4.3"},
+      {:poison, "~> 3.1"}
+    ]
   end
 end

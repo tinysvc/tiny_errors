@@ -39,7 +39,7 @@ defmodule TinyErrors.ReporterTest do
     Reporter.report(test_message1, ts1, md, pid)
     Reporter.report(test_message2, ts2, md, pid)
     [error | _] = Reporter.list(pid)
-    assert error.last_seen == ts2
+    assert error.last_seen == tuple_to_iso8601(ts2)
   end
 
   test "keeps a first seen timestamp" do
@@ -52,7 +52,7 @@ defmodule TinyErrors.ReporterTest do
     Reporter.report(test_message1, ts1, md, pid)
     Reporter.report(test_message2, ts2, md, pid)
     [error | _] = Reporter.list(pid)
-    assert error.first_seen == ts1
+    assert error.first_seen == tuple_to_iso8601(ts1)
   end
 
   test "truncates oldest error after reaching configured limit" do
@@ -68,5 +68,20 @@ defmodule TinyErrors.ReporterTest do
     Reporter.report(test_message, ts, [], pid)
     errors = Reporter.list(pid)
     assert Enum.count(errors) == error_limit
+  end
+
+  test "returns a json serializable list" do
+    {:ok, pid} = Reporter.start_link
+    md = [{:error_logger, :format}]
+    test_message = "#PID<0.690.0> any error"
+    ts = {{2017, 7, 30}, {15, 27, 36, 1}}
+    Reporter.report(test_message, ts, md, pid)
+    errors = Reporter.list(pid)
+    assert Poison.encode!(errors)
+  end
+
+  defp tuple_to_iso8601({date_tuple, {h, m, s, _}}) do
+    n = NaiveDateTime.from_erl!({date_tuple, {h, m, s}})
+    NaiveDateTime.to_iso8601(n)
   end
 end

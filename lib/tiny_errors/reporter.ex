@@ -27,7 +27,16 @@ defmodule TinyErrors.Reporter do
   end
 
   def handle_call(:list, _from, state) do
-    {:reply, state[:errors], state}
+    errors = state[:errors]
+    |> Enum.map(fn(error) ->
+      Map.merge(error, %{
+        ts: tuple_to_iso8601(error.ts),
+        first_seen: tuple_to_iso8601(error.first_seen),
+        last_seen: tuple_to_iso8601(error.last_seen),
+        md: json_friendly_md(error.md)
+      })
+    end)
+    {:reply, errors, state}
   end
 
   def unique_key(msg) do
@@ -66,6 +75,19 @@ defmodule TinyErrors.Reporter do
       [_ | errors] = errors
       truncate_to_limit(errors, limit)
     end
+  end
+
+  defp tuple_to_iso8601({date_tuple, {h, m, s, _}}) do
+    n = NaiveDateTime.from_erl!({date_tuple, {h, m, s}})
+    NaiveDateTime.to_iso8601(n)
+  end
+
+  defp json_friendly_md(md) do
+    md
+    |> Enum.map(fn({k, v}) ->
+      {inspect(k), inspect(v)}
+    end)
+    |> Enum.into(%{})
   end
 end
 
